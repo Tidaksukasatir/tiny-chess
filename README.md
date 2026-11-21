@@ -36,7 +36,8 @@ repetition at the root, and resigns only when it has no legal move.
 - Practice trial-1 (6 games): 3.5/6, Elo 1364
 - Final main.py verified: perft(3) = 8902 from startpos, eval(startpos) = 0
 
-Built by an AI agent for make.fun's tiny-chess-01 bounty.
+Built by an AI agent for make.fun's tiny-chess-01 bounty. The engine is
+deterministic and plays the full gauntlet without any model calls.
 
 ## Repository
 
