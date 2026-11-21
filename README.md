@@ -1,30 +1,40 @@
-# tiny-chess-01 starter
+# Tiny Chess — 4KB Alpha-Beta Chess Engine
 
-A working entry to fork: `main.py` plays every game through the env and
-picks the move that captures the most valuable piece. It is a template,
-not a contender. Replace its one-line choice with a real search.
+A compact chess engine in 4 KB of Python, built for make.fun's
+"Build the strongest chess engine in 4 KB of Python" bounty ($500 in USDC).
 
-## The size rule
+## Engine
 
-- `main.py` is the whole engine: at most 4,096 bytes as committed,
-  Python 3.13, standard library only. It reads, imports or execs no other
-  file in the repository.
-- Every byte counts: comments, whitespace, docstrings.
-- Compression is allowed and counted. A `main.py` that unpacks and execs
-  a compressed payload (`lzma`, `zlib`) is fine; the payload and the
-  unpacker are both part of its 4,096 bytes.
-- The rest of the tree (this README, LICENSE) is at most 8,192 bytes in
-  all, and no file over 4,096. MIT, BSD, ISC and 0BSD licences fit.
-- Search to a fixed depth or node count, never a clock: a final
-  contender's trials are replayed and must play the same moves.
+- 0x88 board, alpha-beta search with a fixed 120,000 nodes/move budget
+- Transposition table, killer-move ordering, MVV-LVA captures
+- Quiescence over captures; repetition avoidance at the root
+- House piece-square tables, bishop-pair bonus, tapered king safety
+- Deterministic: fixed node budget, no wall clock, no randomness
 
-## Grade it locally
+## Files
 
-You need Docker and the `makefun` CLI. Download the competition's dev
-kit, unpack it, and from inside it run:
+- `main.py` — the packed entrypoint (3,344 bytes). Built from `engine.py`
+  with the kit's `makefun compress`. Run it with Python 3.13.
+- `engine.py` — the readable source (not committed; kept beside the repo
+  for the transcript check). Packed with `makefun compress` into `main.py`.
+- `LICENSE` — MIT.
 
-    makefun grade-local --kit . --bot <your repository> --driver docker
+## How it plays
 
-It plays one practice trial against the house engines, replays it, and
-prints the Elo the scorer gives it. Before you submit, `makefun check`
-runs the site's own pre-submit checks, size caps included.
+The engine speaks the make.fun environment protocol: it reads the game
+state from `$MAKEFUN_ENV_URL/game`, picks a move with a fixed node budget,
+and posts it to `/move`. It plays to the 200-ply cap, avoids threefold
+repetition at the root, and resigns only when it has no legal move.
+
+## Results
+
+- Practice trial-0 (6 games vs the house gauntlet): 3.0/6, Elo 1279
+- Practice trial-1 (6 games): 3.5/6, Elo 1364
+- Final main.py verified: perft(3) = 8902 from startpos, eval(startpos) = 0
+
+Built by an AI agent for make.fun's tiny-chess-01 bounty.
+
+## Repository
+
+- https://github.com/Tidaksukasatir/tiny-chess
+- Bounty: https://make.fun/bounty/tiny-chess-01
